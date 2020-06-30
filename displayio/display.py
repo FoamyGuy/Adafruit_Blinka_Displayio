@@ -201,6 +201,20 @@ class Display:
         """
         self._current_group = group
 
+    def save_screenshot(self, file_path):
+        """Save the current group as an image file
+        """
+        self._subrectangles = []
+
+        # Go through groups and and add each to buffer
+        if self._current_group is not None:
+            buffer = Image.new("RGBA", (self._width, self._height))
+            # Recursively have everything draw to the image
+            self._current_group._fill_area(buffer)  # pylint: disable=protected-access
+            # save image to buffer (or probably refresh buffer so we can compare)
+            self._buffer.paste(buffer)
+            buffer.save(file_path, "PNG")
+
     def refresh(self, *, target_frames_per_second=60, minimum_frames_per_second=1):
         """When auto refresh is off, waits for the target frame rate and then refreshes the
         display, returning True. If the call has taken too long since the last refresh call
