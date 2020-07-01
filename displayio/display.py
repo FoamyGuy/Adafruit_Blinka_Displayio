@@ -212,8 +212,11 @@ class Display:
             # Recursively have everything draw to the image
             self._current_group._fill_area(buffer)  # pylint: disable=protected-access
             # save image to buffer (or probably refresh buffer so we can compare)
-            self._buffer.paste(buffer)
-            buffer.save(file_path, "PNG")
+            #self._buffer.paste(buffer)
+            new_image = Image.new("RGBA", (self._width, self._height), "BLACK")
+            new_image.paste(buffer, (0, 0), buffer)
+            new_image.save(file_path, "PNG")
+            #buffer.save(file_path, "PNG")
 
     def refresh(self, *, target_frames_per_second=60, minimum_frames_per_second=1):
         """When auto refresh is off, waits for the target frame rate and then refreshes the
