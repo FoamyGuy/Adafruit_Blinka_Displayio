@@ -169,7 +169,8 @@ class ColorConverter:
 
         input_pixel = InputPixelStruct(pixel=color)
         output_pixel = OutputPixelStruct()
-
+        print(f"ipix: {input_pixel}")
+        print(f"opix: {output_pixel}")
         self._convert(self._output_colorspace, input_pixel, output_pixel)
 
         return output_pixel.pixel
@@ -205,8 +206,18 @@ class ColorConverter:
             self._cached_input_pixel = input_pixel.pixel
             self._cached_output_color = output_color.pixel
 
+
+    @staticmethod
+    def _rgbtuple_to_hex(color_tuple):
+        return color_tuple[0] << 16 | color_tuple[1] << 8 | color_tuple[2]
+
     @staticmethod
     def _convert_pixel(colorspace: Colorspace, pixel: int) -> int:
+        print(f"pixel: {pixel}")
+        if isinstance(pixel, tuple):
+
+            pixel = ColorConverter._rgbtuple_to_hex(pixel)
+            print(f"hx convert: {hex(pixel)}")
         pixel = clamp(pixel, 0, 0xFFFFFFFF)
         if colorspace in (
             Colorspace.RGB565_SWAPPED,
