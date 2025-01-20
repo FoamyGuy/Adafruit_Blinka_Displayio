@@ -429,11 +429,13 @@ class TileGrid:
             self._rendered_hidden = True
             if not first_draw:
                 areas.append(self._previous_area)
+            print(f"was hidden. added {self._previous_area}")
             return
         if self._moved and not first_draw:
             self._previous_area.union(self._current_area, self._dirty_area)
             if self._dirty_area.size() < 2 * self._pixel_width * self._pixel_height:
                 areas.append(self._dirty_area)
+                print(f"was moved and not first_draw. added {self._dirty_area}")
                 return
             areas.append(self._current_area)
             areas.append(self._previous_area)
@@ -442,7 +444,9 @@ class TileGrid:
         tail = areas[-1] if areas else None
         # If we have an in-memory bitmap, then check it for modifications
         if isinstance(self._bitmap, Bitmap):
+
             self._bitmap._get_refresh_areas(areas)  # pylint: disable=protected-access
+            print(f"after bitmap._get_refresh_areas: {areas}")
             refresh_area = areas[-1] if areas else None
             if refresh_area != tail:
                 # Special case a TileGrid that shows a full bitmap and use its

@@ -68,6 +68,7 @@ class Bitmap:
                 bits += 8
 
         self._from_buffer(width, height, bits, None, False)
+        self._have_been_refreshed = False
 
     def _from_buffer(
         self,
@@ -200,8 +201,10 @@ class Bitmap:
                 struct.pack_into("<I", row, x * 4, value)
 
     def _finish_refresh(self):
-        self._dirty_area.x1 = 0
-        self._dirty_area.x2 = 0
+        if self._have_been_refreshed:
+            print(f"inside _finish_refresh() {self._read_only} {self._dirty_area}" )
+            self._dirty_area.x1 = 0
+            self._dirty_area.x2 = 0
 
     def fill(self, value: int) -> None:
         """Fills the bitmap with the supplied palette index value."""
@@ -291,16 +294,18 @@ class Bitmap:
         bitmap_area = Area(0, 0, self._bmp_width, self._bmp_height)
         area.compute_overlap(bitmap_area, self._dirty_area)
 
-    def _finish_refresh(self):
-        if self._read_only:
-            return
-        self._dirty_area.x1 = 0
-        self._dirty_area.x2 = 0
+    # def _finish_refresh(self):
+    #     if self._read_only:
+    #         return
+    #     self._dirty_area.x1 = 0
+    #     self._dirty_area.x2 = 0
 
     def _get_refresh_areas(self, areas: list[Area]) -> None:
+        print(f"inside bitmap._get_refresh_areas(): {self._dirty_area.x1} == {self._dirty_area.x2} or {self._read_only}")
         if self._dirty_area.x1 == self._dirty_area.x2 or self._read_only:
             return
         areas.append(self._dirty_area)
+        self._have_been_refreshed = True
 
     @property
     def width(self) -> int:

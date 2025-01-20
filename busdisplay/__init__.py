@@ -304,7 +304,9 @@ class BusDisplay:
             return False
 
         areas_to_refresh = self._get_refresh_areas()
+        #print(f"inside _refresh_display areas: {areas_to_refresh}")
         for area in areas_to_refresh:
+            print(f"inside _refresh_display area: {area}")
             self._refresh_area(area)
 
         self._core.finish_refresh()
@@ -315,8 +317,10 @@ class BusDisplay:
         """Get a list of areas to be refreshed"""
         areas = []
         if self._core.full_refresh:
+            print("core full refresh")
             areas.append(self._core.area)
         elif self._core.current_group is not None:
+            #print("core current group is not none")
             self._core.current_group._get_refresh_areas(  # pylint: disable=protected-access
                 areas
             )
@@ -329,7 +333,8 @@ class BusDisplay:
             and (time.monotonic() * 1000 - self._core.last_refresh)
             > self._native_ms_per_frame
         ):
-            self.refresh()
+            result = self.refresh()
+            #print(f"refreshed: {result}")
 
     def _refresh_area(self, area) -> bool:
         """Loop through dirty areas and redraw that area."""

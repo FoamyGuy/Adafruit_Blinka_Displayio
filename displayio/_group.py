@@ -188,6 +188,7 @@ class Group:
                 layer._get_refresh_areas(areas)
             elif isinstance(layer, TileGrid):
                 if not layer._get_rendered_hidden():
+                    print(f"calling layer._get_refresh_areas on tg: {layer}")
                     layer._get_refresh_areas(areas)
 
     def _set_hidden(self, hidden: bool) -> None:
